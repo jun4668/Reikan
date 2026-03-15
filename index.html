@@ -5,195 +5,195 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>霊感クイズ</title>
   <style>
-    *{
-      box-sizing:border-box;
+    * {
+      box-sizing: border-box;
     }
 
-    body{
-      margin:0;
-      font-family:sans-serif;
-      text-align:center;
-      color:white;
-      min-height:100vh;
-      padding:20px 12px 36px;
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      text-align: center;
+      color: white;
+      min-height: 100vh;
+      padding: 20px 12px 36px;
       background:
-        linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.86)),
+        linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.86)),
         url("https://images.unsplash.com/photo-1509248961158-e54f6934749c?auto=format&fit=crop&w=1200&q=80");
-      background-size:cover;
-      background-position:center;
-      background-attachment:fixed;
-      overflow-x:hidden;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      overflow-x: hidden;
     }
 
-    body.shake{
-      animation:screenShake 0.35s ease-in-out;
+    body.shake {
+      animation: screenShake 0.35s ease-in-out;
     }
 
-    @keyframes screenShake{
-      0%{transform:translate(0,0);}
-      20%{transform:translate(-6px,3px);}
-      40%{transform:translate(6px,-3px);}
-      60%{transform:translate(-4px,2px);}
-      80%{transform:translate(4px,-2px);}
-      100%{transform:translate(0,0);}
+    @keyframes screenShake {
+      0% { transform: translate(0, 0); }
+      20% { transform: translate(-6px, 3px); }
+      40% { transform: translate(6px, -3px); }
+      60% { transform: translate(-4px, 2px); }
+      80% { transform: translate(4px, -2px); }
+      100% { transform: translate(0, 0); }
     }
 
-    h1{
-      color:#ff4d4d;
-      margin:8px 0 18px;
-      font-size:32px;
-      text-shadow:0 0 12px rgba(255,0,0,0.45);
+    h1 {
+      color: #ff4d4d;
+      margin: 8px 0 18px;
+      font-size: 32px;
+      text-shadow: 0 0 12px rgba(255, 0, 0, 0.45);
     }
 
-    .container{
-      max-width:560px;
-      margin:auto;
-      background:rgba(0,0,0,0.74);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:18px;
-      padding:22px 16px 28px;
-      box-shadow:0 10px 30px rgba(0,0,0,0.45);
-      backdrop-filter:blur(2px);
+    .container {
+      max-width: 560px;
+      margin: auto;
+      background: rgba(0, 0, 0, 0.74);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 22px 16px 28px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(2px);
     }
 
-    #count{
-      color:#d0d0d0;
-      font-size:14px;
-      margin-bottom:12px;
+    #count {
+      color: #d0d0d0;
+      font-size: 14px;
+      margin-bottom: 12px;
     }
 
-    #question{
-      font-size:22px;
-      line-height:1.6;
-      min-height:80px;
-      margin-bottom:18px;
+    #question {
+      font-size: 22px;
+      line-height: 1.6;
+      min-height: 80px;
+      margin-bottom: 18px;
     }
 
-    button{
-      display:block;
-      width:100%;
-      max-width:360px;
-      margin:10px auto;
-      padding:15px 16px;
-      border:none;
-      border-radius:12px;
-      font-size:17px;
-      cursor:pointer;
-      background:#1f1f1f;
-      color:white;
-      transition:transform .15s ease, background .2s ease;
+    button {
+      display: block;
+      width: 100%;
+      max-width: 360px;
+      margin: 10px auto;
+      padding: 15px 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      cursor: pointer;
+      background: #1f1f1f;
+      color: white;
+      transition: transform .15s ease, background .2s ease;
     }
 
-    button:hover{
-      background:#b70000;
-      transform:scale(1.02);
+    button:hover {
+      background: #b70000;
+      transform: scale(1.02);
     }
 
-    .start-btn{
-      background:#7a0018;
-      font-weight:bold;
+    .start-btn {
+      background: #7a0018;
+      font-weight: bold;
     }
 
-    .start-btn:hover{
-      background:#a30022;
+    .start-btn:hover {
+      background: #a30022;
     }
 
-    .share-btn{
-      background:#1d9bf0;
-      font-weight:bold;
+    .share-btn {
+      background: #1d9bf0;
+      font-weight: bold;
     }
 
-    .share-btn:hover{
-      background:#0d7dc7;
+    .share-btn:hover {
+      background: #0d7dc7;
     }
 
-    .retry-btn{
-      background:#555;
+    .retry-btn {
+      background: #555;
     }
 
-    .retry-btn:hover{
-      background:#777;
+    .retry-btn:hover {
+      background: #777;
     }
 
-    #result{
-      margin-top:10px;
-      line-height:1.8;
+    #result {
+      margin-top: 10px;
+      line-height: 1.8;
     }
 
-    .result-title{
-      font-size:28px;
-      margin:10px 0 6px;
+    .result-title {
+      font-size: 28px;
+      margin: 10px 0 6px;
     }
 
-    .percent{
-      font-size:34px;
-      font-weight:bold;
-      color:#ffdada;
-      margin:8px 0;
+    .percent {
+      font-size: 34px;
+      font-weight: bold;
+      color: #ffdada;
+      margin: 8px 0;
     }
 
-    .score{
-      font-size:16px;
-      color:#d8d8d8;
+    .score {
+      font-size: 16px;
+      color: #d8d8d8;
     }
 
-    .desc{
-      font-size:16px;
-      color:#f0f0f0;
-      margin-top:12px;
-      line-height:1.7;
+    .desc {
+      font-size: 16px;
+      color: #f0f0f0;
+      margin-top: 12px;
+      line-height: 1.7;
     }
 
-    .small{
-      margin-top:15px;
-      font-size:13px;
-      color:#bbbbbb;
-      line-height:1.6;
+    .small {
+      margin-top: 15px;
+      font-size: 13px;
+      color: #bbbbbb;
+      line-height: 1.6;
     }
 
-    .tap-ghost{
-      position:fixed;
-      width:130px;
-      max-width:34vw;
-      pointer-events:none;
-      transform:translate(-50%,-50%);
-      z-index:9999;
-      animation:ghostBurst 0.95s ease-out forwards;
-      filter:drop-shadow(0 0 16px rgba(255,255,255,0.28));
+    .tap-ghost {
+      position: fixed;
+      width: 130px;
+      max-width: 34vw;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+      animation: ghostBurst 0.95s ease-out forwards;
+      filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.28));
     }
 
-    @keyframes ghostBurst{
-      0%{
-        transform:translate(-50%,-50%) scale(0.15) rotate(-8deg);
-        opacity:0;
+    @keyframes ghostBurst {
+      0% {
+        transform: translate(-50%, -50%) scale(0.15) rotate(-8deg);
+        opacity: 0;
       }
-      25%{
-        transform:translate(-50%,-50%) scale(1.18) rotate(6deg);
-        opacity:1;
+      25% {
+        transform: translate(-50%, -50%) scale(1.18) rotate(6deg);
+        opacity: 1;
       }
-      100%{
-        transform:translate(-50%,-180%) scale(0.95) rotate(0deg);
-        opacity:0;
+      100% {
+        transform: translate(-50%, -180%) scale(0.95) rotate(0deg);
+        opacity: 0;
       }
     }
 
-    .flash{
-      position:fixed;
-      inset:0;
-      background:rgba(255,255,255,0.12);
-      pointer-events:none;
-      opacity:0;
-      z-index:9998;
+    .flash {
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.12);
+      pointer-events: none;
+      opacity: 0;
+      z-index: 9998;
     }
 
-    .flash.on{
-      animation:flashBg 0.25s linear;
+    .flash.on {
+      animation: flashBg 0.25s linear;
     }
 
-    @keyframes flashBg{
-      0%{opacity:0;}
-      30%{opacity:1;}
-      100%{opacity:0;}
+    @keyframes flashBg {
+      0% { opacity: 0; }
+      30% { opacity: 1; }
+      100% { opacity: 0; }
     }
   </style>
 </head>
@@ -388,4 +388,28 @@
       document.getElementById("result").innerHTML = `
         <div class="result-title">${result.title}</div>
         <div class="percent">霊感レベル ${percent}%</div>
-        <div class="score">スコア ${score} /
+        <div class="score">スコア ${score} / ${maxScore}</div>
+        <div class="desc">${result.desc}</div>
+      `;
+    }
+
+    function shareX() {
+      const maxScore = questions.length * 3;
+      const percent = Math.round((score / maxScore) * 100);
+      const result = getResult(percent);
+      const url = "https://jun4668.github.io/Reikan/";
+      const text = `👻霊感クイズをやってみた\n${result.title}\n霊感レベル ${percent}%`;
+
+      window.open(
+        "https://twitter.com/intent/tweet?text=" +
+        encodeURIComponent(text) +
+        "&url=" +
+        encodeURIComponent(url),
+        "_blank"
+      );
+    }
+
+    showStartScreen();
+  </script>
+</body>
+</html>
