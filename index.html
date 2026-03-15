@@ -1,0 +1,182 @@
+<!DOCTYPE html><html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>霊感クイズ</title><style>
+
+body{
+font-family:sans-serif;
+text-align:center;
+background:#0d0d1a;
+color:white;
+padding:30px;
+}
+
+h1{
+margin-bottom:30px;
+}
+
+button{
+display:block;
+margin:12px auto;
+padding:14px 20px;
+font-size:16px;
+border-radius:10px;
+border:none;
+cursor:pointer;
+background:white;
+}
+
+button:hover{
+background:#ddd;
+}
+
+.card{
+background:#1b1b2f;
+padding:25px;
+border-radius:15px;
+max-width:500px;
+margin:auto;
+}
+
+.share{
+background:#1da1f2;
+color:white;
+font-weight:bold;
+}
+
+</style></head><body><h1>👻霊感クイズ</h1><div class="card"><p id="question"></p><div id="answers"></div></div><script>
+
+const quiz=[
+
+{
+q:"初めて行く場所なのに来たことがある気がする？",
+a:[
+{text:"よくある",p:5},
+{text:"たまにある",p:4},
+{text:"あまりない",p:2},
+{text:"ない",p:1}
+]
+},
+
+{
+q:"人混みに行くと疲れやすい？",
+a:[
+{text:"かなり疲れる",p:5},
+{text:"少し疲れる",p:4},
+{text:"普通",p:2},
+{text:"平気",p:1}
+]
+},
+
+{
+q:"夢が現実になることは？",
+a:[
+{text:"何度もある",p:5},
+{text:"数回ある",p:4},
+{text:"一度だけ",p:3},
+{text:"ない",p:1}
+]
+},
+
+{
+q:"直感は当たりやすい？",
+a:[
+{text:"かなり当たる",p:5},
+{text:"そこそこ当たる",p:4},
+{text:"普通",p:2},
+{text:"当たらない",p:1}
+]
+}
+
+];
+
+let current=0;
+let score=0;
+
+function showQuestion(){
+
+const q=quiz[current];
+
+document.getElementById("question").innerText=q.q;
+
+const answers=document.getElementById("answers");
+
+answers.innerHTML="";
+
+q.a.forEach(choice=>{
+
+const btn=document.createElement("button");
+
+btn.innerText=choice.text;
+
+btn.onclick=()=>{
+
+score+=choice.p;
+
+current++;
+
+if(current<quiz.length){
+
+showQuestion();
+
+}else{
+
+showResult();
+
+}
+
+};
+
+answers.appendChild(btn);
+
+});
+
+}
+
+function showResult(){
+
+let result="";
+
+if(score>=18){
+
+result="👁霊感かなり強いタイプ";
+
+}
+
+else if(score>=12){
+
+result="🌙直感タイプ";
+
+}
+
+else{
+
+result="🧠現実派タイプ";
+
+}
+
+let text="あなたの霊感タイプは『"+result+"』でした！";
+
+let tweet="https://twitter.com/intent/tweet?text="+
+
+encodeURIComponent(text+" 👻霊感クイズはこちら");
+
+document.querySelector(".card").innerHTML=
+
+"<h2>"+result+"</h2>"+
+
+"<p>あなたの霊感スコア："+score+"</p>"+
+
+"<br>"+
+
+"<a href='"+tweet+"' target='_blank'>"+
+
+"<button class='share'>結果をXでシェア</button>"+
+
+"</a>";
+
+}
+
+showQuestion();
+
+</script></body></html>
