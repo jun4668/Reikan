@@ -4,326 +4,589 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>霊感クイズ</title>
-
 <style>
+  body{
+    margin:0;
+    font-family:sans-serif;
+    text-align:center;
+    color:white;
+    min-height:100vh;
+    padding:20px 12px 36px;
+    background:
+      linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.9)),
+      url("https://images.unsplash.com/photo-1509248961158-e54f6934749c?auto=format&fit=crop&w=1200&q=80");
+    background-size:cover;
+    background-position:center;
+    overflow-x:hidden;
+  }
 
-body{
-margin:0;
-font-family:sans-serif;
-text-align:center;
-color:white;
-background:black;
-min-height:100vh;
-padding:20px;
-background-image:url("https://images.unsplash.com/photo-1509248961158-e54f6934749c");
-background-size:cover;
-background-position:center;
-}
+  h1{
+    color:#ff4d4d;
+    margin:8px 0 18px;
+    font-size:32px;
+    text-shadow:0 0 12px rgba(255,0,0,.45);
+  }
 
-h1{
-color:#ff4b4b;
-}
+  .container{
+    max-width:560px;
+    margin:auto;
+    background:rgba(0,0,0,.74);
+    border-radius:18px;
+    padding:22px 16px 28px;
+    box-shadow:0 10px 30px rgba(0,0,0,.45);
+  }
 
-.container{
-max-width:600px;
-margin:auto;
-background:rgba(0,0,0,0.7);
-padding:25px;
-border-radius:15px;
-}
+  #count{
+    color:#d0d0d0;
+    font-size:14px;
+    margin-bottom:12px;
+  }
 
-button{
-padding:15px;
-width:80%;
-margin:10px;
-font-size:18px;
-border:none;
-border-radius:10px;
-background:#222;
-color:white;
-cursor:pointer;
-}
+  #question{
+    font-size:22px;
+    line-height:1.6;
+    min-height:80px;
+    margin-bottom:18px;
+  }
 
-button:hover{
-background:#a00000;
-}
+  button{
+    display:block;
+    width:100%;
+    max-width:360px;
+    margin:10px auto;
+    padding:15px 16px;
+    border:none;
+    border-radius:12px;
+    font-size:17px;
+    cursor:pointer;
+    background:#1f1f1f;
+    color:white;
+  }
 
-.ghost{
-position:fixed;
-font-size:150px;
-left:50%;
-top:50%;
-transform:translate(-50%,-50%);
-animation:jump 1s;
-}
+  button:hover{
+    background:#b70000;
+  }
 
-@keyframes jump{
-0%{transform:translate(-50%,-50%) scale(0.2);}
-50%{transform:translate(-50%,-70%) scale(1.2);}
-100%{transform:translate(-50%,-50%) scale(1);}
-}
+  .start-btn{
+    background:#7a0018;
+    font-weight:bold;
+  }
 
-.runghost{
-position:fixed;
-top:20%;
-left:-200px;
-font-size:120px;
-animation:run 2s linear;
-}
+  .share-btn{
+    background:#1d9bf0;
+    font-weight:bold;
+  }
 
-@keyframes run{
-0%{left:-200px;}
-100%{left:110%;}
-}
+  .retry-btn{
+    background:#555;
+  }
 
-#blood{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:linear-gradient(red,transparent);
-opacity:0;
-pointer-events:none;
-}
+  .small{
+    margin-top:15px;
+    font-size:13px;
+    color:#bbbbbb;
+    line-height:1.6;
+  }
 
-.flash{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:white;
-opacity:0;
-}
+  .result-title{
+    font-size:28px;
+    margin:10px 0 6px;
+  }
 
+  .percent{
+    font-size:34px;
+    font-weight:bold;
+    color:#ffdada;
+    margin:8px 0;
+  }
+
+  .score{
+    font-size:16px;
+    color:#d8d8d8;
+  }
+
+  .desc{
+    font-size:16px;
+    color:#f0f0f0;
+    margin-top:12px;
+    line-height:1.7;
+  }
+
+  .tap-ghost{
+    position:fixed;
+    width:120px;
+    height:120px;
+    pointer-events:none;
+    z-index:9999;
+    transform:translate(-50%,-50%);
+    animation:ghostBurst .9s ease-out forwards;
+    font-size:90px;
+    line-height:120px;
+    text-align:center;
+    filter:drop-shadow(0 0 14px rgba(255,255,255,.4));
+  }
+
+  @keyframes ghostBurst{
+    0%{
+      transform:translate(-50%,-50%) scale(.2);
+      opacity:0;
+    }
+    25%{
+      transform:translate(-50%,-50%) scale(1.2);
+      opacity:1;
+    }
+    100%{
+      transform:translate(-50%,-170%) scale(.95);
+      opacity:0;
+    }
+  }
+
+  .cross-ghost{
+    position:fixed;
+    top:22%;
+    left:-140px;
+    font-size:90px;
+    z-index:9998;
+    animation:crossRun 1.4s linear forwards;
+    filter:drop-shadow(0 0 14px rgba(255,255,255,.4));
+  }
+
+  @keyframes crossRun{
+    0%{
+      left:-140px;
+      opacity:0;
+    }
+    10%{
+      opacity:1;
+    }
+    100%{
+      left:110vw;
+      opacity:0;
+    }
+  }
+
+  #jumpScare{
+    position:fixed;
+    inset:0;
+    display:none;
+    z-index:10001;
+    background:rgba(0,0,0,.78);
+    align-items:center;
+    justify-content:center;
+    font-size:180px;
+  }
+
+  #jumpScare.show{
+    display:flex;
+    animation:jumpFlash .7s ease-out forwards;
+  }
+
+  @keyframes jumpFlash{
+    0%{opacity:0; transform:scale(.7);}
+    25%{opacity:1; transform:scale(1.15);}
+    100%{opacity:0; transform:scale(1);}
+  }
+
+  #blood{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:10000;
+    opacity:0;
+    background:
+      radial-gradient(circle at 10% 0%, rgba(120,0,0,.96) 0 54px, transparent 55px),
+      radial-gradient(circle at 38% 0%, rgba(130,0,0,.96) 0 58px, transparent 59px),
+      radial-gradient(circle at 76% 0%, rgba(120,0,0,.96) 0 60px, transparent 61px),
+      linear-gradient(to bottom, rgba(115,0,0,.9), rgba(70,0,0,.26) 24%, transparent 58%);
+  }
+
+  #blood.on{
+    animation:bloodDrop 1.1s ease-out;
+  }
+
+  @keyframes bloodDrop{
+    0%{opacity:0; transform:translateY(-24px);}
+    25%{opacity:1;}
+    100%{opacity:0; transform:translateY(10px);}
+  }
+
+  #flash{
+    position:fixed;
+    inset:0;
+    background:rgba(255,255,255,.14);
+    opacity:0;
+    pointer-events:none;
+    z-index:9997;
+  }
+
+  #flash.on{
+    animation:flashBg .22s linear;
+  }
+
+  @keyframes flashBg{
+    0%{opacity:0;}
+    30%{opacity:1;}
+    100%{opacity:0;}
+  }
+
+  body.shake{
+    animation:screenShake .35s ease-in-out;
+  }
+
+  @keyframes screenShake{
+    0%{transform:translate(0,0);}
+    20%{transform:translate(-8px,4px);}
+    40%{transform:translate(8px,-4px);}
+    60%{transform:translate(-5px,3px);}
+    80%{transform:translate(5px,-3px);}
+    100%{transform:translate(0,0);}
+  }
 </style>
 </head>
-
 <body>
 
-<h1>👻霊感クイズ</h1>
+<div id="flash"></div>
+<div id="blood"></div>
+<div id="jumpScare">👻</div>
+
+<h1>👻 霊感クイズ</h1>
 
 <div class="container">
-
-<div id="question"></div>
-
-<div id="buttons"></div>
-
-<div id="result"></div>
-
+  <div id="count"></div>
+  <div id="question"></div>
+  <div id="buttons"></div>
+  <div id="result"></div>
+  <div class="small">※ホラー演出つきのエンタメ診断です</div>
 </div>
 
-<div id="blood"></div>
-<div class="flash" id="flash"></div>
-
 <script>
+const questions = [
+  "初めて行く場所なのに、来たことがある気がする？",
+  "夢で見たことが現実になったことがある？",
+  "人の気持ちをなんとなく感じることがある？",
+  "嫌な予感が当たることがある？",
+  "誰もいないのに気配を感じることがある？",
+  "突然ゾクッとする場所がある？",
+  "夜中に目が覚めて何かを感じることがある？",
+  "写真を見ると、その場の空気を感じることがある？",
+  "金縛りにあったことがある？",
+  "人に『勘が鋭い』と言われることがある？",
+  "古い建物に入ると空気が重いと感じる？",
+  "誰かに見られている気がすることがある？",
+  "知らない景色が夢に出てきたことがある？",
+  "直感で決めたことが当たりやすい？",
+  "人混みに行くとどっと疲れる？",
+  "急に寒気がすることがある？",
+  "場所によって落ち着かない感じがある？",
+  "偶然にしては出来すぎた体験がある？",
+  "不思議な音を聞いたことがある？",
+  "自分には少し霊感があると思う？"
+];
 
-const questions=[
+let current = 0;
+let score = 0;
+let soundEnabled = false;
+let audioCtx = null;
+let bgmTimer = null;
 
-"初めて行く場所なのに来たことがある気がする？",
-"夢が現実になることがある？",
-"人の気持ちを感じる？",
-"嫌な予感が当たる？",
-"誰もいないのに気配を感じる？",
-"ゾクッとする場所がある？",
-"夜中に目が覚める？",
-"写真の空気を感じる？",
-"金縛りになった？",
-"勘が鋭いと言われる？",
-"古い建物が苦手？",
-"見られてる感じがある？",
-"知らない場所の夢を見る？",
-"直感で決める？",
-"人混みで疲れる？",
-"寒気を感じる？",
-"場所の空気がわかる？",
-"偶然が多い？",
-"不思議な音を聞く？",
-"霊感あると思う？"
+function initAudio(){
+  if(audioCtx) return;
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if(!AC) return;
+  audioCtx = new AC();
+}
 
-]
+function ensureAudio(){
+  if(!audioCtx) return;
+  if(audioCtx.state === "suspended"){
+    audioCtx.resume().catch(()=>{});
+  }
+}
 
-let current=0
-let score=0
+function playTone(freq = 220, duration = .15, type = "sine", volume = .05){
+  if(!soundEnabled || !audioCtx) return;
+  ensureAudio();
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+  gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start();
+  osc.stop(audioCtx.currentTime + duration);
+}
 
-function playSound(){
+function playScareSound(){
+  if(!soundEnabled || !audioCtx) return;
+  ensureAudio();
 
-let ctx=new(window.AudioContext||window.webkitAudioContext)()
+  const now = audioCtx.currentTime;
+  const osc1 = audioCtx.createOscillator();
+  const osc2 = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
 
-let osc=ctx.createOscillator()
+  osc1.type = "sawtooth";
+  osc2.type = "triangle";
 
-let gain=ctx.createGain()
+  osc1.frequency.setValueAtTime(900, now);
+  osc1.frequency.exponentialRampToValueAtTime(110, now + .5);
 
-osc.type="sawtooth"
+  osc2.frequency.setValueAtTime(650, now);
+  osc2.frequency.exponentialRampToValueAtTime(90, now + .5);
 
-osc.frequency.value=400
+  gain.gain.setValueAtTime(.0001, now);
+  gain.gain.exponentialRampToValueAtTime(.13, now + .02);
+  gain.gain.exponentialRampToValueAtTime(.0001, now + .55);
 
-gain.gain.value=0.1
+  osc1.connect(gain);
+  osc2.connect(gain);
+  gain.connect(audioCtx.destination);
 
-osc.connect(gain)
+  osc1.start(now);
+  osc2.start(now);
+  osc1.stop(now + .56);
+  osc2.stop(now + .56);
+}
 
-gain.connect(ctx.destination)
+function startBgm(){
+  if(!soundEnabled || !audioCtx) return;
+  if(bgmTimer) clearInterval(bgmTimer);
 
-osc.start()
+  const drone = () => {
+    if(!soundEnabled || !audioCtx) return;
+    ensureAudio();
 
-osc.frequency.exponentialRampToValueAtTime(50,ctx.currentTime+0.5)
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
 
-osc.stop(ctx.currentTime+0.5)
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(73, now);
 
+    gain.gain.setValueAtTime(.0001, now);
+    gain.gain.exponentialRampToValueAtTime(.03, now + .8);
+    gain.gain.exponentialRampToValueAtTime(.0001, now + 4.0);
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 4.1);
+
+    setTimeout(() => playTone(146, .18, "triangle", .014), 1500);
+  };
+
+  drone();
+  bgmTimer = setInterval(drone, 4000);
+}
+
+function showStartScreen(){
+  document.getElementById("count").textContent = "";
+  document.getElementById("question").innerHTML = "音ありで始めますか？";
+  document.getElementById("buttons").innerHTML = `
+    <button class="start-btn" onclick="startQuiz(true)">🔊 音ありで始める</button>
+    <button onclick="startQuiz(false)">🔇 音なしで始める</button>
+  `;
+  document.getElementById("result").innerHTML = "";
+}
+
+function startQuiz(withSound){
+  soundEnabled = withSound;
+  initAudio();
+  ensureAudio();
+
+  if(withSound){
+    startBgm();
+  }else{
+    if(bgmTimer) clearInterval(bgmTimer);
+  }
+
+  current = 0;
+  score = 0;
+  showQuestion();
 }
 
 function showQuestion(){
+  if(current >= questions.length){
+    showResult();
+    return;
+  }
 
-if(current>=questions.length){
-showResult()
-return
+  document.getElementById("count").textContent =
+    "質問 " + (current + 1) + " / " + questions.length;
+
+  document.getElementById("question").innerHTML =
+    "<div>" + questions[current] + "</div>";
+
+  document.getElementById("buttons").innerHTML = `
+    <button onclick="answer(3, event)">よくある</button>
+    <button onclick="answer(2, event)">たまにある</button>
+    <button onclick="answer(1, event)">あまりない</button>
+    <button onclick="answer(0, event)">ない</button>
+  `;
+
+  document.getElementById("result").innerHTML = "";
 }
 
-document.getElementById("question").innerHTML=
+function answer(point, ev){
+  score += point;
 
-"<h2>"+questions[current]+"</h2>"
+  const x = ev ? ev.clientX : window.innerWidth / 2;
+  const y = ev ? ev.clientY : window.innerHeight / 2;
 
-document.getElementById("buttons").innerHTML=
+  tapGhost(x, y);
 
-`
-<button onclick="answer(3,event)">よくある</button>
-<button onclick="answer(2,event)">たまにある</button>
-<button onclick="answer(1,event)">あまりない</button>
-<button onclick="answer(0,event)">ない</button>
-`
+  const rand = Math.random();
+  if(rand < 0.4){
+    setTimeout(crossGhost, 110);
+  }else if(rand < 0.65){
+    setTimeout(jumpScare, 120);
+  }else if(rand < 0.82){
+    setTimeout(bloodEffect, 100);
+  }
 
+  current++;
+  setTimeout(showQuestion, 450);
 }
 
-function answer(point,e){
+function tapGhost(x, y){
+  const ghost = document.createElement("div");
+  ghost.className = "tap-ghost";
+  ghost.textContent = "👻";
+  ghost.style.left = x + "px";
+  ghost.style.top = y + "px";
+  document.body.appendChild(ghost);
 
-score+=point
+  flashEffect();
+  shakeScreen();
+  bloodEffect();
+  vibratePhone();
+  playScareSound();
 
-effect(e)
-
-current++
-
-setTimeout(showQuestion,500)
-
+  setTimeout(() => ghost.remove(), 980);
 }
 
-function effect(e){
+function crossGhost(){
+  const ghost = document.createElement("div");
+  ghost.className = "cross-ghost";
+  ghost.textContent = "👻";
+  document.body.appendChild(ghost);
 
-playSound()
+  flashEffect();
+  shakeScreen();
+  vibratePhone([80,30,80]);
+  playScareSound();
 
-if(navigator.vibrate){
-navigator.vibrate([100,50,100])
+  setTimeout(() => ghost.remove(), 1450);
 }
 
-let ghost=document.createElement("div")
-ghost.className="ghost"
-ghost.innerHTML="👻"
-document.body.appendChild(ghost)
+function jumpScare(){
+  const jump = document.getElementById("jumpScare");
+  jump.classList.add("show");
 
-setTimeout(()=>ghost.remove(),900)
+  flashEffect();
+  bloodEffect();
+  shakeScreen();
+  vibratePhone([120,50,120]);
+  playScareSound();
 
-let run=document.createElement("div")
-run.className="runghost"
-run.innerHTML="👻"
-document.body.appendChild(run)
+  setTimeout(() => {
+    jump.classList.remove("show");
+  }, 720);
+}
 
-setTimeout(()=>run.remove(),2000)
+function bloodEffect(){
+  const blood = document.getElementById("blood");
+  blood.classList.remove("on");
+  void blood.offsetWidth;
+  blood.classList.add("on");
+}
 
-let flash=document.getElementById("flash")
-flash.style.opacity=1
-setTimeout(()=>flash.style.opacity=0,200)
+function flashEffect(){
+  const flash = document.getElementById("flash");
+  flash.classList.remove("on");
+  void flash.offsetWidth;
+  flash.classList.add("on");
+}
 
-let blood=document.getElementById("blood")
-blood.style.opacity=0.6
-setTimeout(()=>blood.style.opacity=0,800)
+function shakeScreen(){
+  document.body.classList.remove("shake");
+  void document.body.offsetWidth;
+  document.body.classList.add("shake");
+  setTimeout(() => {
+    document.body.classList.remove("shake");
+  }, 390);
+}
 
+function vibratePhone(pattern = [60,40,90]){
+  if(navigator.vibrate){
+    navigator.vibrate(pattern);
+  }
 }
 
 function getResult(percent){
-
-if(percent>=85){
-
-return{
-
-title:"🔮かなり霊感が強い",
-
-desc:"あなたは周囲の空気や感情の変化を非常に敏感に感じ取るタイプです。人が気づかないような小さな違和感や雰囲気の変化を直感的に察知する力があり、実際にその感覚が当たることも多いでしょう。人混みや重たい空気の場所では疲れやすいこともありますが、それはあなたの感受性が高い証拠でもあります。無理に怖い場所へ行くより、自分が安心できる環境を大切にすることが重要です。"
-
-}
-
-}
-
-if(percent>=65){
-
-return{
-
-title:"👻霊感がある",
-
-desc:"あなたは直感が鋭く、周囲の雰囲気や気配を感じ取りやすいタイプです。強い霊感というほどではなくても、人の感情や場の空気の変化を自然と察知する能力があります。後から振り返ると『あの時の予感は当たっていた』と思うことも多いでしょう。自分の直感を大切にしつつ、冷静さも保てるバランスの良いタイプです。"
-
-}
-
-}
-
-if(percent>=40){
-
-return{
-
-title:"✨直感が鋭い",
-
-desc:"あなたは霊感というよりも、観察力や直感力が優れているタイプです。周囲の変化を自然と読み取り、人の表情や雰囲気から多くの情報を感じ取っています。怖い話や不思議な体験に対しても、冷静に楽しめるタイプでしょう。"
-
-}
-
-}
-
-return{
-
-title:"🙂現実派タイプ",
-
-desc:"あなたは現実的に物事を考えるタイプです。霊的な感覚よりも、事実や状況を見て判断する冷静さがあります。そのため、怖い話や不思議な現象にも落ち着いて向き合うことができるでしょう。周囲の人に安心感を与える存在でもあります。"
-
-}
-
+  if(percent >= 85){
+    return {
+      title:"🔮 かなり霊感が強い",
+      desc:"あなたは、人や場所の空気の変化をかなり深く感じ取るタイプです。言葉にできない違和感や、なんとなく危ないと感じる直感が鋭く働きやすく、後から振り返ると『やっぱりあの感覚は当たっていた』と思うことも少なくないでしょう。人の感情やその場の重たい空気を受け取りやすいため、にぎやかな場所や疲れている人のそばに長くいると、理由もなくどっと疲れてしまうことがあるかもしれません。恋愛では相手の気持ちの変化に敏感で、言葉になる前に違和感に気づきやすい反面、相手の不安や迷いまで背負ってしまう傾向があります。仕事では周囲の空気を読む力が強く、危険察知や人間関係の微妙な変化に早く気づけるのが大きな強みです。夜は感覚がさらに冴えやすく、静かな場所では不思議な気配を感じることもありそうです。"
+    };
+  }
+  if(percent >= 65){
+    return {
+      title:"👻 霊感がある",
+      desc:"あなたは、見えない空気や気配の変化にかなり気づきやすいタイプです。はっきりと何かが見えるというより、なんとなく嫌な感じがしたり、場所や人に対して『ここは少し変だな』と察知したりする力があります。特に体調が良い時や気持ちが静かな時ほど、その感覚は強く出やすいでしょう。恋愛では相手の本音や温度差に敏感で、少しの違和感でもすぐ気づきやすい一方、考えすぎて不安を大きくしてしまうこともあります。仕事では空気を読む力や先回りして危険を避ける感覚が役立ちやすく、対人面ではかなり有利です。"
+    };
+  }
+  if(percent >= 40){
+    return {
+      title:"✨ 直感が鋭い",
+      desc:"あなたは、霊感が特別強いというよりも、勘の良さや感受性の高さに恵まれたタイプです。人の表情や話し方、その場の空気感などから小さな違和感を自然に読み取る力があり、無意識のうちに『何か変だな』と気づけることが多いでしょう。そのため、危険を避けたり、人間関係の微妙なズレを察知したりする能力に優れています。恋愛では相手の態度の変化に比較的早く気づきやすく、駆け引きよりも直感で相手を見抜く傾向があります。"
+    };
+  }
+  return {
+    title:"🙂 現実派タイプ",
+    desc:"あなたは、物事を落ち着いて現実的に受け止めるタイプです。雰囲気や気配に過度に左右されにくく、怖い話や不思議な出来事に対しても、まずは冷静に状況を見て判断しようとする傾向があります。そのため、周囲がざわついている場面でも必要以上に不安にならず、自分の感覚をしっかり保てる強さを持っています。恋愛では感情に流されるより、相手の行動や言葉を見て信頼を築くタイプで、安定感のある関係を好むでしょう。"
+  };
 }
 
 function showResult(){
+  const maxScore = questions.length * 3;
+  const percent = Math.round((score / maxScore) * 100);
+  const result = getResult(percent);
 
-let max=questions.length*3
+  document.getElementById("count").textContent = "診断結果";
+  document.getElementById("question").innerHTML = "";
+  document.getElementById("buttons").innerHTML = `
+    <button class="share-btn" onclick="shareX()">Xでシェア</button>
+    <button class="retry-btn" onclick="showStartScreen()">もう一度やる</button>
+  `;
 
-let percent=Math.round(score/max*100)
-
-let r=getResult(percent)
-
-document.getElementById("question").innerHTML=""
-
-document.getElementById("buttons").innerHTML=""
-
-document.getElementById("result").innerHTML=
-
-`
-<h2>${r.title}</h2>
-<h1>霊感レベル ${percent}%</h1>
-<p>${r.desc}</p>
-
-<button onclick="location.reload()">もう一度</button>
-
-<button onclick="share()">Xでシェア</button>
-`
-
+  document.getElementById("result").innerHTML = `
+    <div class="result-title">${result.title}</div>
+    <div class="percent">霊感レベル ${percent}%</div>
+    <div class="score">スコア ${score} / ${maxScore}</div>
+    <div class="desc">${result.desc}</div>
+  `;
 }
 
-function share(){
+function shareX(){
+  const maxScore = questions.length * 3;
+  const percent = Math.round((score / maxScore) * 100);
+  const result = getResult(percent);
+  const url = "https://jun4668.github.io/Reikan/";
+  const text = `👻霊感クイズをやってみた\n${result.title}\n霊感レベル ${percent}%`;
 
-let url="https://jun4668.github.io/Reikan/"
-
-window.open("https://twitter.com/intent/tweet?text=霊感クイズやってみた👻&url="+url)
-
+  window.open(
+    "https://twitter.com/intent/tweet?text=" +
+    encodeURIComponent(text) +
+    "&url=" +
+    encodeURIComponent(url),
+    "_blank"
+  );
 }
 
-showQuestion()
-
+showStartScreen();
 </script>
-
 </body>
 </html>
