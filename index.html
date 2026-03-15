@@ -116,27 +116,28 @@
     position:fixed;
     width:120px;
     height:120px;
-    pointer-events:none;
-    z-index:9999;
-    transform:translate(-50%,-50%);
-    animation:ghostBurst .9s ease-out forwards;
+    margin-left:-60px;
+    margin-top:-60px;
     font-size:90px;
     line-height:120px;
     text-align:center;
-    filter:drop-shadow(0 0 14px rgba(255,255,255,.4));
+    pointer-events:none;
+    z-index:99999;
+    animation:ghostPop .9s ease-out forwards;
+    text-shadow:0 0 18px rgba(255,255,255,.5);
   }
 
-  @keyframes ghostBurst{
+  @keyframes ghostPop{
     0%{
-      transform:translate(-50%,-50%) scale(.2);
+      transform:scale(.2);
       opacity:0;
     }
-    25%{
-      transform:translate(-50%,-50%) scale(1.2);
+    30%{
+      transform:scale(1.2);
       opacity:1;
     }
     100%{
-      transform:translate(-50%,-170%) scale(.95);
+      transform:translateY(-120px) scale(.95);
       opacity:0;
     }
   }
@@ -144,36 +145,30 @@
   .cross-ghost{
     position:fixed;
     top:22%;
-    left:-140px;
+    left:-120px;
     font-size:90px;
-    z-index:9998;
+    z-index:99998;
+    pointer-events:none;
     animation:crossRun 1.4s linear forwards;
-    filter:drop-shadow(0 0 14px rgba(255,255,255,.4));
+    text-shadow:0 0 18px rgba(255,255,255,.5);
   }
 
   @keyframes crossRun{
-    0%{
-      left:-140px;
-      opacity:0;
-    }
-    10%{
-      opacity:1;
-    }
-    100%{
-      left:110vw;
-      opacity:0;
-    }
+    0%{ left:-120px; opacity:0; }
+    10%{ opacity:1; }
+    100%{ left:110vw; opacity:0; }
   }
 
   #jumpScare{
     position:fixed;
     inset:0;
     display:none;
-    z-index:10001;
-    background:rgba(0,0,0,.78);
+    z-index:100001;
+    background:rgba(0,0,0,.8);
     align-items:center;
     justify-content:center;
     font-size:180px;
+    pointer-events:none;
   }
 
   #jumpScare.show{
@@ -182,16 +177,16 @@
   }
 
   @keyframes jumpFlash{
-    0%{opacity:0; transform:scale(.7);}
-    25%{opacity:1; transform:scale(1.15);}
-    100%{opacity:0; transform:scale(1);}
+    0%{ opacity:0; transform:scale(.7); }
+    25%{ opacity:1; transform:scale(1.15); }
+    100%{ opacity:0; transform:scale(1); }
   }
 
   #blood{
     position:fixed;
     inset:0;
     pointer-events:none;
-    z-index:10000;
+    z-index:100000;
     opacity:0;
     background:
       radial-gradient(circle at 10% 0%, rgba(120,0,0,.96) 0 54px, transparent 55px),
@@ -205,9 +200,9 @@
   }
 
   @keyframes bloodDrop{
-    0%{opacity:0; transform:translateY(-24px);}
-    25%{opacity:1;}
-    100%{opacity:0; transform:translateY(10px);}
+    0%{ opacity:0; transform:translateY(-24px); }
+    25%{ opacity:1; }
+    100%{ opacity:0; transform:translateY(10px); }
   }
 
   #flash{
@@ -216,7 +211,7 @@
     background:rgba(255,255,255,.14);
     opacity:0;
     pointer-events:none;
-    z-index:9997;
+    z-index:99997;
   }
 
   #flash.on{
@@ -224,9 +219,9 @@
   }
 
   @keyframes flashBg{
-    0%{opacity:0;}
-    30%{opacity:1;}
-    100%{opacity:0;}
+    0%{ opacity:0; }
+    30%{ opacity:1; }
+    100%{ opacity:0; }
   }
 
   body.shake{
@@ -234,12 +229,12 @@
   }
 
   @keyframes screenShake{
-    0%{transform:translate(0,0);}
-    20%{transform:translate(-8px,4px);}
-    40%{transform:translate(8px,-4px);}
-    60%{transform:translate(-5px,3px);}
-    80%{transform:translate(5px,-3px);}
-    100%{transform:translate(0,0);}
+    0%{ transform:translate(0,0); }
+    20%{ transform:translate(-8px,4px); }
+    40%{ transform:translate(8px,-4px); }
+    60%{ transform:translate(-5px,3px); }
+    80%{ transform:translate(5px,-3px); }
+    100%{ transform:translate(0,0); }
   }
 </style>
 </head>
@@ -529,7 +524,7 @@ function getResult(percent){
   if(percent >= 85){
     return {
       title:"🔮 かなり霊感が強い",
-      desc:"あなたは、人や場所の空気の変化をかなり深く感じ取るタイプです。言葉にできない違和感や、なんとなく危ないと感じる直感が鋭く働きやすく、後から振り返ると『やっぱりあの感覚は当たっていた』と思うことも少なくないでしょう。人の感情やその場の重たい空気を受け取りやすいため、にぎやかな場所や疲れている人のそばに長くいると、理由もなくどっと疲れてしまうことがあるかもしれません。恋愛では相手の気持ちの変化に敏感で、言葉になる前に違和感に気づきやすい反面、相手の不安や迷いまで背負ってしまう傾向があります。仕事では周囲の空気を読む力が強く、危険察知や人間関係の微妙な変化に早く気づけるのが大きな強みです。夜は感覚がさらに冴えやすく、静かな場所では不思議な気配を感じることもありそうです。"
+      desc:"あなたは、人や場所の空気の変化をかなり深く感じ取るタイプです。言葉にできない違和感や、なんとなく危ないと感じる直感が鋭く働きやすく、後から振り返ると『やっぱりあの感覚は当たっていた』と思うことも少なくないでしょう。人の感情やその場の重たい空気を受け取りやすいため、にぎやかな場所や疲れている人のそばに長くいると、理由もなくどっと疲れてしまうことがあるかもしれません。恋愛では相手の気持ちの変化に敏感で、言葉になる前に違和感に気づきやすい反面、相手の不安や迷いまで背負ってしまう傾向があります。夜は感覚がさらに冴えやすく、静かな場所では不思議な気配を感じることもありそうです。"
     };
   }
   if(percent >= 65){
