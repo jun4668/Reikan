@@ -22,6 +22,7 @@
       background-size:cover;
       background-position:center;
       background-attachment:fixed;
+      overflow-x:hidden;
     }
 
     h1{
@@ -90,6 +91,15 @@
       background:#777;
     }
 
+    .start-btn{
+      background:#7a0018;
+      font-weight:bold;
+    }
+
+    .start-btn:hover{
+      background:#a30022;
+    }
+
     #result{
       margin-top:10px;
       line-height:1.8;
@@ -143,6 +153,32 @@
       50%{opacity:1;}
       100%{opacity:0;}
     }
+
+    .tap-ghost{
+      position:fixed;
+      width:120px;
+      max-width:32vw;
+      pointer-events:none;
+      transform:translate(-50%,-50%);
+      animation:ghostPop 1s ease-out forwards;
+      z-index:10000;
+      filter:drop-shadow(0 0 12px rgba(255,255,255,0.25));
+    }
+
+    @keyframes ghostPop{
+      0%{
+        transform:translate(-50%,-50%) scale(0.1) rotate(-8deg);
+        opacity:0;
+      }
+      35%{
+        transform:translate(-50%,-50%) scale(1.15) rotate(5deg);
+        opacity:1;
+      }
+      100%{
+        transform:translate(-50%,-160%) scale(1) rotate(0deg);
+        opacity:0;
+      }
+    }
   </style>
 </head>
 <body>
@@ -159,11 +195,11 @@
     <div class="small">※ホラー演出つきのエンタメ診断です</div>
   </div>
 
-  <audio id="bgm" loop>
+  <audio id="bgm" loop preload="auto">
     <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_5b7c1c0a4a.mp3?filename=horror-ambience-110228.mp3" type="audio/mpeg">
   </audio>
 
-  <audio id="scream">
+  <audio id="scream" preload="auto">
     <source src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_0e4b0e9a21.mp3?filename=scary-sound-2-110394.mp3" type="audio/mpeg">
   </audio>
 
@@ -193,15 +229,43 @@
 
     let current = 0;
     let score = 0;
-    let bgmStarted = false;
+    let soundEnabled = false;
 
-    function startBgmOnce(){
-      if(!bgmStarted){
+    function showStartScreen() {
+      document.getElementById("count").textContent = "";
+      document.getElementById("question").innerHTML = "音ありで始めますか？";
+      document.getElementById("buttons").innerHTML = `
+        <button class="start-btn" onclick="startQuiz(true)">🔊 音ありで始める</button>
+        <button onclick="startQuiz(false)">🔇 音なしで始める</button>
+      `;
+      document.getElementById("result").innerHTML = "";
+    }
+
+    function startQuiz(withSound) {
+      soundEnabled = withSound;
+
+      if (withSound) {
         const bgm = document.getElementById("bgm");
+        const scream = document.getElementById("scream");
+
         bgm.volume = 0.3;
-        bgm.play().catch(() => {});
-        bgmStarted = true;
+        scream.volume = 0.85;
+
+        bgm.play().then(() => {
+          bgm.pause();
+          bgm.currentTime = 0;
+          return bgm.play();
+        }).catch(() => {});
+
+        scream.play().then(() => {
+          scream.pause();
+          scream.currentTime = 0;
+        }).catch(() => {});
       }
+
+      current = 0;
+      score = 0;
+      showQuestion();
     }
 
     function showQuestion(){
@@ -217,39 +281,45 @@
         "<div>" + questions[current] + "</div>";
 
       document.getElementById("buttons").innerHTML = `
-        <button onclick="answer(3)">よくある</button>
-        <button onclick="answer(2)">たまにある</button>
-        <button onclick="answer(1)">あまりない</button>
-        <button onclick="answer(0)">ない</button>
+        <button onclick="answer(3, event)">よくある</button>
+        <button onclick="answer(2, event)">たまにある</button>
+        <button onclick="answer(1, event)">あまりない</button>
+        <button onclick="answer(0, event)">ない</button>
       `;
 
       document.getElementById("result").innerHTML = "";
     }
 
-    function answer(point){
-      startBgmOnce();
+    function answer(point, event){
       score += point;
       current++;
 
-      if(Math.random() < 0.22){
-        jumpScare();
+      if(soundEnabled && Math.random() < 0.55){
+        const x = event ? event.clientX : window.innerWidth / 2;
+        const y = event ? event.clientY : window.innerHeight / 2;
+        tapGhost(x, y);
       }
 
       setTimeout(showQuestion, 220);
     }
 
-    function jumpScare(){
-      const ghost = document.getElementById("ghost");
-      const scream = document.getElementById("scream");
+    function tapGhost(x, y){
+      const ghost = document.createElement("img");
+      ghost.src = "https://i.imgur.com/8Q2QY1F.png";
+      ghost.className = "tap-ghost";
+      ghost.style.left = x + "px";
+      ghost.style.top = y + "px";
+      document.body.appendChild(ghost);
 
-      ghost.style.display = "block";
-      scream.currentTime = 0;
-      scream.volume = 0.85;
-      scream.play().catch(() => {});
+      if(soundEnabled){
+        const scream = document.getElementById("scream");
+        scream.currentTime = 0;
+        scream.play().catch(() => {});
+      }
 
       setTimeout(() => {
-        ghost.style.display = "none";
-      }, 950);
+        ghost.remove();
+      }, 1000);
     }
 
     function getResult(percent){
@@ -286,7 +356,7 @@
       document.getElementById("question").innerHTML = "";
       document.getElementById("buttons").innerHTML = `
         <button class="share-btn" onclick="shareX()">Xでシェア</button>
-        <button class="retry-btn" onclick="retryQuiz()">もう一度やる</button>
+        <button class="retry-btn" onclick="showStartScreen()">もう一度やる</button>
       `;
 
       document.getElementById("result").innerHTML = `
@@ -301,7 +371,7 @@
       const maxScore = questions.length * 3;
       const percent = Math.round((score / maxScore) * 100);
       const result = getResult(percent);
-      const url = "https://jun4668.github.io/Reikan";
+      const url = "https://jun4668.github.io/Reikan/";
       const text = `👻霊感クイズをやってみた\n${result.title}\n霊感レベル ${percent}%`;
 
       window.open(
@@ -313,13 +383,7 @@
       );
     }
 
-    function retryQuiz(){
-      current = 0;
-      score = 0;
-      showQuestion();
-    }
-
-    showQuestion();
+    showStartScreen();
   </script>
 </body>
 </html>
