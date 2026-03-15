@@ -1,181 +1,325 @@
-<!DOCTYPE html><html lang="ja">
+<!DOCTYPE html>
+<html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>霊感クイズ</title><style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>霊感クイズ</title>
+  <style>
+    *{
+      box-sizing:border-box;
+    }
 
-body{
-font-family:sans-serif;
-text-align:center;
-color:white;
-background:black;
-background-image:url("https://images.unsplash.com/photo-1509248961158-e54f6934749c");
-background-size:cover;
-padding:30px;
-}
+    body{
+      margin:0;
+      font-family:sans-serif;
+      text-align:center;
+      color:white;
+      min-height:100vh;
+      padding:24px 14px 40px;
+      background:
+        linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.82)),
+        url("https://images.unsplash.com/photo-1509248961158-e54f6934749c?auto=format&fit=crop&w=1200&q=80");
+      background-size:cover;
+      background-position:center;
+      background-attachment:fixed;
+    }
 
-.container{
-max-width:520px;
-margin:auto;
-background:rgba(0,0,0,0.75);
-padding:30px;
-border-radius:12px;
-}
+    h1{
+      color:#ff4b4b;
+      margin:10px 0 20px;
+      font-size:32px;
+      text-shadow:0 0 10px rgba(255,0,0,0.35);
+    }
 
-h1{
-color:#ff4b4b;
-}
+    .container{
+      max-width:560px;
+      margin:auto;
+      background:rgba(0,0,0,0.75);
+      padding:24px 16px 28px;
+      border-radius:16px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.45);
+    }
 
-button{
-display:block;
-width:80%;
-margin:10px auto;
-padding:14px;
-border-radius:8px;
-border:none;
-font-size:16px;
-background:#222;
-color:white;
-}
+    #count{
+      color:#d6d6d6;
+      font-size:14px;
+      margin-bottom:14px;
+    }
 
-button:hover{
-background:#ff0000;
-}
+    #question{
+      font-size:22px;
+      line-height:1.6;
+      min-height:80px;
+      margin-bottom:20px;
+    }
 
-#ghost{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:url("https://i.imgur.com/8Q2QY1F.png") center no-repeat;
-background-size:40%;
-display:none;
-z-index:999;
-}
+    button{
+      display:block;
+      width:100%;
+      max-width:360px;
+      margin:10px auto;
+      padding:14px 16px;
+      border:none;
+      border-radius:10px;
+      font-size:17px;
+      cursor:pointer;
+      background:#222;
+      color:white;
+      transition:0.2s;
+    }
 
-</style></head><body><div id="ghost"></div><h1>👻霊感クイズ</h1><div class="container"><div id="question"></div><div id="buttons"></div><div id="result"></div></div><audio autoplay loop>
-<source src="https://cdn.pixabay.com/audio/2022/03/15/audio_5b7c1c0a4a.mp3">
-</audio><audio id="scream">
-<source src="https://cdn.pixabay.com/audio/2022/03/10/audio_0e4b0e9a21.mp3">
-</audio><script>
+    button:hover{
+      background:#c70000;
+      transform:scale(1.02);
+    }
 
-const questions=[
+    .share-btn{
+      background:#1d9bf0;
+      font-weight:bold;
+    }
 
-"初めて行く場所なのに来たことがある気がする？",
-"夢が現実になることがある？",
-"人の気持ちがなんとなくわかる？",
-"嫌な予感が当たることがある？",
-"誰もいないのに気配を感じる？",
-"突然ゾクっとすることがある？",
-"夜中に目が覚めることがある？",
-"写真に不思議なものが写る？",
-"金縛りにあったことがある？",
-"勘が鋭いと言われる？",
-"古い場所が苦手？",
-"誰かに見られている気がすることがある？",
-"夢の中で知らない場所を見る？",
-"直感で決めることが多い？",
-"心霊の話が好き？",
-"誰かの感情に影響されやすい？",
-"夜道が怖い？",
-"急に寒気がすることがある？",
-"偶然がよく起こる？",
-"不思議な体験をしたことがある？"
+    .share-btn:hover{
+      background:#0f7fca;
+    }
 
-];
+    .retry-btn{
+      background:#555;
+    }
 
-let current=0;
-let score=0;
+    .retry-btn:hover{
+      background:#777;
+    }
 
-function showQuestion(){
+    #result{
+      margin-top:10px;
+      line-height:1.8;
+    }
 
-if(current>=questions.length){
-showResult();
-return;
-}
+    .result-title{
+      font-size:28px;
+      margin:10px 0 6px;
+    }
 
-document.getElementById("question").innerHTML="<h3>"+questions[current]+"</h3>";
+    .percent{
+      font-size:34px;
+      font-weight:bold;
+      color:#ffd7d7;
+      margin:8px 0;
+    }
 
-document.getElementById("buttons").innerHTML=`
+    .score{
+      font-size:16px;
+      color:#d5d5d5;
+    }
 
-<button onclick="answer(3)">よくある</button>
-<button onclick="answer(2)">たまにある</button>
-<button onclick="answer(1)">あまりない</button>
-<button onclick="answer(0)">ない</button>
+    .desc{
+      font-size:16px;
+      color:#f0f0f0;
+      margin-top:12px;
+    }
 
-`;
+    .small{
+      margin-top:16px;
+      font-size:13px;
+      color:#bbbbbb;
+      line-height:1.6;
+    }
 
-}
+    #ghost{
+      display:none;
+      position:fixed;
+      inset:0;
+      z-index:9999;
+      background:
+        rgba(0,0,0,0.55)
+        url("https://i.imgur.com/8Q2QY1F.png")
+        center center / min(72vw, 320px)
+        no-repeat;
+      animation:flash 0.2s linear 5;
+    }
 
-function answer(p){
+    @keyframes flash{
+      0%{opacity:0;}
+      50%{opacity:1;}
+      100%{opacity:0;}
+    }
+  </style>
+</head>
+<body>
 
-score+=p;
-current++;
+  <div id="ghost"></div>
 
-if(Math.random()<0.25){
-jumpScare();
-}
+  <h1>👻 霊感クイズ</h1>
 
-showQuestion();
+  <div class="container">
+    <div id="count"></div>
+    <div id="question"></div>
+    <div id="buttons"></div>
+    <div id="result"></div>
+    <div class="small">※ホラー演出つきのエンタメ診断です</div>
+  </div>
 
-}
+  <audio id="bgm" loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_5b7c1c0a4a.mp3?filename=horror-ambience-110228.mp3" type="audio/mpeg">
+  </audio>
 
-function jumpScare(){
+  <audio id="scream">
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_0e4b0e9a21.mp3?filename=scary-sound-2-110394.mp3" type="audio/mpeg">
+  </audio>
 
-const ghost=document.getElementById("ghost");
+  <script>
+    const questions = [
+      "初めて行く場所なのに、来たことがある気がする？",
+      "夢で見たことが現実になったことがある？",
+      "人の気持ちをなんとなく感じることがある？",
+      "嫌な予感が当たることがある？",
+      "誰もいないのに気配を感じることがある？",
+      "突然ゾクッとする場所がある？",
+      "夜中に目が覚めて何かを感じることがある？",
+      "写真を見ると、その場の空気を感じることがある？",
+      "金縛りにあったことがある？",
+      "人に『勘が鋭い』と言われることがある？",
+      "古い建物に入ると空気が重いと感じる？",
+      "誰かに見られている気がすることがある？",
+      "知らない景色が夢に出てきたことがある？",
+      "直感で決めたことが当たりやすい？",
+      "人混みに行くとどっと疲れる？",
+      "急に寒気がすることがある？",
+      "場所によって落ち着かない感じがある？",
+      "偶然にしては出来すぎた体験がある？",
+      "不思議な音を聞いたことがある？",
+      "自分には少し霊感があると思う？"
+    ];
 
-ghost.style.display="block";
+    let current = 0;
+    let score = 0;
+    let bgmStarted = false;
 
-document.getElementById("scream").play();
+    function startBgmOnce(){
+      if(!bgmStarted){
+        const bgm = document.getElementById("bgm");
+        bgm.volume = 0.3;
+        bgm.play().catch(() => {});
+        bgmStarted = true;
+      }
+    }
 
-setTimeout(()=>{
-ghost.style.display="none";
-},1200);
+    function showQuestion(){
+      if(current >= questions.length){
+        showResult();
+        return;
+      }
 
-}
+      document.getElementById("count").textContent =
+        "質問 " + (current + 1) + " / " + questions.length;
 
-function showResult(){
+      document.getElementById("question").innerHTML =
+        "<div>" + questions[current] + "</div>";
 
-let percent=Math.round(score/(questions.length*3)*100);
+      document.getElementById("buttons").innerHTML = `
+        <button onclick="answer(3)">よくある</button>
+        <button onclick="answer(2)">たまにある</button>
+        <button onclick="answer(1)">あまりない</button>
+        <button onclick="answer(0)">ない</button>
+      `;
 
-let text="";
+      document.getElementById("result").innerHTML = "";
+    }
 
-if(percent>80){
-text="🔮霊感かなり強い";
-}
-else if(percent>60){
-text="👻霊感がある";
-}
-else if(percent>30){
-text="✨直感が鋭い";
-}
-else{
-text="🙂普通タイプ";
-}
+    function answer(point){
+      startBgmOnce();
+      score += point;
+      current++;
 
-document.getElementById("question").innerHTML="診断結果";
+      if(Math.random() < 0.22){
+        jumpScare();
+      }
 
-document.getElementById("buttons").innerHTML="";
+      setTimeout(showQuestion, 220);
+    }
 
-document.getElementById("result").innerHTML=
+    function jumpScare(){
+      const ghost = document.getElementById("ghost");
+      const scream = document.getElementById("scream");
 
-"<h2>"+text+"</h2>"+
-"<h3>霊感レベル "+percent+"%</h3>"+
-"<br><button onclick='shareX()'>Xでシェア</button>";
+      ghost.style.display = "block";
+      scream.currentTime = 0;
+      scream.volume = 0.85;
+      scream.play().catch(() => {});
 
-}
+      setTimeout(() => {
+        ghost.style.display = "none";
+      }, 950);
+    }
 
-function shareX(){
+    function getResult(percent){
+      if(percent >= 85){
+        return {
+          title:"🔮 かなり霊感が強い",
+          desc:"人や場所の空気の変化にかなり敏感なタイプ。無理に怖い場所へ行かない方がよさそうです…。"
+        };
+      }
+      if(percent >= 65){
+        return {
+          title:"👻 霊感がある",
+          desc:"直感がかなり鋭く、見えない違和感を拾いやすいタイプかもしれません。"
+        };
+      }
+      if(percent >= 40){
+        return {
+          title:"✨ 直感が鋭い",
+          desc:"霊感というより、勘や感受性が高めのタイプ。空気を読む力がありそうです。"
+        };
+      }
+      return {
+        title:"🙂 現実派タイプ",
+        desc:"落ち着いて物事を判断するタイプ。怖い話でも比較的冷静に楽しめそうです。"
+      };
+    }
 
-let url="https://jun4668.github.io/Reikan";
+    function showResult(){
+      const maxScore = questions.length * 3;
+      const percent = Math.round((score / maxScore) * 100);
+      const result = getResult(percent);
 
-let text="👻霊感クイズやってみた";
+      document.getElementById("count").textContent = "診断結果";
+      document.getElementById("question").innerHTML = "";
+      document.getElementById("buttons").innerHTML = `
+        <button class="share-btn" onclick="shareX()">Xでシェア</button>
+        <button class="retry-btn" onclick="retryQuiz()">もう一度やる</button>
+      `;
 
-window.open("https://twitter.com/intent/tweet?text="+text+"&url="+url);
+      document.getElementById("result").innerHTML = `
+        <div class="result-title">${result.title}</div>
+        <div class="percent">霊感レベル ${percent}%</div>
+        <div class="score">スコア ${score} / ${maxScore}</div>
+        <div class="desc">${result.desc}</div>
+      `;
+    }
 
-}
+    function shareX(){
+      const maxScore = questions.length * 3;
+      const percent = Math.round((score / maxScore) * 100);
+      const result = getResult(percent);
+      const url = "https://jun4668.github.io/Reikan";
+      const text = `👻霊感クイズをやってみた\n${result.title}\n霊感レベル ${percent}%`;
 
-showQuestion();
+      window.open(
+        "https://twitter.com/intent/tweet?text=" +
+        encodeURIComponent(text) +
+        "&url=" +
+        encodeURIComponent(url),
+        "_blank"
+      );
+    }
 
-</script></body>
+    function retryQuiz(){
+      current = 0;
+      score = 0;
+      showQuestion();
+    }
+
+    showQuestion();
+  </script>
+</body>
 </html>
